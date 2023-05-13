@@ -34,9 +34,19 @@ public class ClientConnection implements Runnable {
             InputStream in = client.getInputStream();
             OutputStream out = client.getOutputStream();
             Scanner scanner = new Scanner(in).useDelimiter("\\n");
-            MenuInteraction interaction = new MenuInteraction(out, scanner);
+            out.write("Welcome to YouChat\n".getBytes());
+            out.write("Please Insert your name: \n".getBytes());
+            out.flush();
+            name = scanner.nextLine();
+            /**
+             * Adding the name of the current user to the list of available
+             * users.
+             */
+            currentUsers.add(name);
+            out.write("Congratulations, You Have Joined the server. \n".getBytes());
+            MenuInteraction interaction = new MenuInteraction(out, scanner, name);
             interaction.interact();
-            name = interaction.name;
+            
             
             // Use the name to identify the client in future messages
             System.out.println(name + " connected.");
