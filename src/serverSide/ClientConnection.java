@@ -10,39 +10,38 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import static serverSide.WebSocketServer.currentUsers;
 
 /**
  *
  * @author gabri
  */
 public class ClientConnection implements Runnable {
-    
+
     Socket client;
     public String name;
-    
-    public ClientConnection(Socket client){
+
+    public ClientConnection(Socket client) {
         this.client = client;
     }
-    
+
     @Override
     public void run() {
-       
+
         try {
             InputStream in = client.getInputStream();
             OutputStream out = client.getOutputStream();
-            out.write("Welcome to YouChat\n".getBytes());
-            out.write("Please Insert your name: \n".getBytes());
-            out.flush();
             Scanner scanner = new Scanner(in).useDelimiter("\\n");
-            name = scanner.nextLine();
-            out.write("Congratulations, You Have Joined the server. \n".getBytes());
-            out.write("Here is a list of available users.\n".getBytes());
-            out.flush();
+            MenuInteraction interaction = new MenuInteraction(out, scanner);
+            interaction.interact();
+            name = interaction.name;
             
             // Use the name to identify the client in future messages
             System.out.println(name + " connected.");
             while (true) {
-                
+
                 String data = scanner.nextLine();
                 System.out.println(name + "> " + data);
                 // handle incoming message from client
