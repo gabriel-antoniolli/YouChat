@@ -31,7 +31,7 @@ public class ClientReader implements Runnable {
             Scanner scanner = new Scanner(in).useDelimiter("\n");
             while (true) {
                 String message = scanner.nextLine();
-                System.out.println("Server: " + message);
+                System.out.println("YouChat: " + message);
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -34,10 +34,10 @@ public class ClientConnection implements Runnable {
             out.write("Please Insert your name: \n".getBytes());
             out.flush();
             Scanner scanner = new Scanner(in).useDelimiter("\\n");
-            // Prompt the client for their name
-            out.write("Enter your name: ".getBytes());
-            out.flush();
             name = scanner.nextLine();
+            out.write("Congratulations, You Have Joined the server. \n".getBytes());
+            out.write("Here is a list of available users.\n".getBytes());
+            out.flush();
             
             // Use the name to identify the client in future messages
             System.out.println(name + " connected.");

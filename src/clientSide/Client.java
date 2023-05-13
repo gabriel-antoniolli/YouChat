@@ -29,8 +29,7 @@ public class Client {
             // create a new thread to continuously read messages from the server
             Thread readThread = new Thread(new ClientReader(socket));
             readThread.start();
-            //readThread.join();
-            
+            readThread.join(1000);
             
             while (valid) {
                 System.out.print("> ");
