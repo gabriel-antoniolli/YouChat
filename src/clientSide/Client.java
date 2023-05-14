@@ -23,31 +23,31 @@ public class Client {
             System.out.println("Connected to server at 127.0.0.1 on port 8080");
             InputStream in = socket.getInputStream();
             OutputStream out = socket.getOutputStream();
-            Scanner scanner = new Scanner(System.in);
             boolean valid = true;
             
             // create a new thread to continuously read messages from the server
-            Thread readThread = new Thread(new ClientReader(socket));
+            Thread readThread = new Thread(new ClientReader(socket,out));
             readThread.start();
             readThread.join(1000);
             
-            while (valid) {
-                System.out.print("> ");
-                String message = scanner.nextLine();
-                
-                /**
-                 * This + "\n" is quite important because without it the Scanner.nextLine() in the ClientConnection class 
-                 * would not stop waiting for the message since the way it stops is when he finds the \n delimeter.
-                 * I confess it took me some time to figure this out.
-                 */
-                out.write((message + "\n").getBytes());
-                out.flush();
-                
-                if(message.equals("exit")){
-                    valid = false;
-                }
-            }
-            socket.close();
+//            while (valid) {
+//                
+//                System.out.print(">");
+//                String message = scanner.nextLine();
+//                
+//                /**
+//                 * This + "\n" is quite important because without it the Scanner.nextLine() in the ClientConnection class 
+//                 * would not stop waiting for the message since the way it stops is when he finds the \n delimeter.
+//                 * I confess it took me some time to figure this out.
+//                 */
+//                out.write((message + "\n").getBytes());
+//                out.flush();
+//                
+//                if(message.equals("exit")){
+//                    valid = false;
+//                }
+//            }
+//            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

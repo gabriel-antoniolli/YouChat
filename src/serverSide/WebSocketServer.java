@@ -15,6 +15,7 @@ public class WebSocketServer {
   
 
     public static ArrayList<String> currentUsers = new ArrayList<>();
+    public static ArrayList<ClientConnection> connectedClients = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
          ServerSocket server = new ServerSocket(8080);
@@ -23,6 +24,7 @@ public class WebSocketServer {
         while (true) {
             Socket client = server.accept();
             System.out.println("A client connected.");
+            ClientConnection clientConnection = new ClientConnection(client);
             Thread newClient = new Thread(new ClientConnection(client));
             newClient.start();
             
@@ -30,9 +32,6 @@ public class WebSocketServer {
     } catch (IOException e) {
         System.out.println("Error: " + e.getMessage());
     }
-
-
-
-
     }
+    
 }
