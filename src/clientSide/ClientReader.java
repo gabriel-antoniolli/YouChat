@@ -7,6 +7,7 @@ package clientSide;
 
 import static clientSide.Client.getUsers;
 import static clientSide.Client.setUsers;
+import static clientSide.Client.users;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -59,7 +60,6 @@ public class ClientReader implements Runnable {
                             }
                     }
                     setUsers(allUsers);
-                    getUsers();
                 }
                 if(message.equals("INVITATION_REQUEST")){
                 

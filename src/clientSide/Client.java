@@ -20,16 +20,16 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class Client {
     
-    private static ArrayList<String> allUsers = new ArrayList<>();
+    public static ArrayList<String> users = new ArrayList<>();
     private static HashMap<Integer,String> userMap = new HashMap<>();
     
     public static void setUsers(ArrayList<String> list){
-        allUsers = list;
+        users = list;
         
     }
     
     public static ArrayList<String> getUsers(){
-        return allUsers;
+        return users;
     }
     
     public static void main(String[] args) throws InterruptedException {
