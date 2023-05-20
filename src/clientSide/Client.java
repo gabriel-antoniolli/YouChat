@@ -58,27 +58,6 @@ public class Client {
             menu.setName(clientName);
             menu.display();
             
-            // create a new thread to continuously read messages from the server
-            
-            
-//            while (valid) {
-//                
-//                System.out.print(">");
-//                String message = scanner.nextLine();
-//                
-//                /**
-//                 * This + "\n" is quite important because without it the Scanner.nextLine() in the ClientConnection class 
-//                 * would not stop waiting for the message since the way it stops is when he finds the \n delimeter.
-//                 * I confess it took me some time to figure this out.
-//                 */
-//                out.write((message + "\n").getBytes());
-//                out.flush();
-//                
-//                if(message.equals("exit")){
-//                    valid = false;
-//                }
-//            }
-//            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

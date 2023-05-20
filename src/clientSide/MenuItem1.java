@@ -64,19 +64,22 @@ public class MenuItem1 {
             if (getUsers().size() == 1) {
                 System.out.println("No Users Available yet!\n");
                 System.out.println("Please insert 'r' to refresh the list");
+                String decision = internal.nextLine();
+                System.out.println("test 1: " + decision);
+                if(!decision.trim().isEmpty()){
+                    if (decision.equals("r")) {
+                        out.write("DECISION_1\n".getBytes());
+                        display();
 
-                if (internal.nextLine().equals("r")) {
-                    out.write("DECISION_1\n".getBytes());
-                    display();
-
-                } else {
-                    // Maybe go back to previous menu would be good
-                    System.out.println("Command not recognized, leaving application");
-                    System.exit(0);
+                    } else {
+                        System.out.println(decision + ": that is it");
+                        // Maybe go back to previous menu would be good
+                        System.out.println("Command not recognized, leaving application");
+                        System.exit(0);
+                    }
                 }
-                
             } else if(getUsers().size() > 1){
-            
+                
                 /**
                  * Display the user alternatives for the current client.
                  */
@@ -86,64 +89,27 @@ public class MenuItem1 {
                     } 
                 }
                 String decision = internal.nextLine();
-                if(decision.equals("r")){
-                    out.write("DECISION_1\n".getBytes());
-                    display();
-                } else if(decision.matches("[0-9]+")){
-                    /*
-                     * send message to server requesting that user
-                     * server has to find a way of stopping all the process of the requested client and open chat
-                    
-                    */
-                    
-                    String serverComm = "CHAT_REQUEST\n" ;
-                    String from = name + "\n";
-                    String to = map.get(Integer.parseInt(decision)) + "\n";
+                if(!decision.trim().isEmpty()){
+                    if(decision.equals("r")){
+                        out.write("DECISION_1\n".getBytes());
+                        display();
+                    } else if(decision.matches("[0-9]+")){
+                        /*
+                         * send message to server requesting that user
+                         * server has to find a way of stopping all the process of the requested client and open chat
 
-                    out.write(serverComm.getBytes());
-                    out.write(from.getBytes());
-                    out.write(to.getBytes());
-                    out.flush();
+                        */
+                        System.out.println("Nao tenho certeza se cai aqui a porra da decisao");
+                        String serverComm = "CHAT_REQUEST\n" ;
+                        String from = name + "\n";
+                        String to = map.get(Integer.parseInt(decision)) + "\n";
+
+                        out.write(serverComm.getBytes());
+                        out.write(from.getBytes());
+                        out.write(to.getBytes());
+                        out.flush();
+                    }
                 }
-                
-                
             }
-
-            
-        
-
-//            if (getUsers().size() == 1) {
-//                
-//
-//                
-//
-//            } else {
-//                String msg = "";
-//                for (String user : getUsers()) {
-//                    
-//                    options.add(getUsers().size()+"_ " + user );
-//                    if(!user.equals(name)){
-//                        msg = getUsers().size() + "_ " + user;
-//                        System.out.println(msg);
-//                    }
-//                }
-//            
-//                String decision = internal.nextLine();
-//                if (decision.equals("r")) {
-//                    out.write("DECISION_1\n".getBytes());
-//                    display();
-//                } else {
-//                    if(decision.length() < 2 && decision.matches("[0-9]+")){
-//
-//                    }
-//                }
-//            
-//            
-//            
-//            }
-        //                 else {
-        //                    System.out.println("Command not recognized, leaving application");
-        //                    System.exit(0);
-        //                }
     }
 }

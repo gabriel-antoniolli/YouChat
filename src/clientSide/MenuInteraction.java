@@ -45,6 +45,7 @@ public class MenuInteraction  {
             System.out.println("3_ Exit");
 
             int decision = sc.nextInt();
+            System.out.println("I Cant Believe it is here: " + decision);
             if(decision == 1){
                out.write("DECISION_1\n".getBytes());
                
@@ -62,33 +63,4 @@ public class MenuInteraction  {
             }
         }
     }  
-//        try {
-//            out.write("Here is a list of available users.\n".getBytes());
-//            int count = 0;
-//            for (String user : currentUsers) {
-//                count++;
-//                String msg = "";
-//                if (user == name && currentUsers.size() == 1) {
-//                    msg = "No Users Available yet!\n";
-//                    out.write(msg.getBytes());
-//                    out.write("Please insert 'r' to refresh the list\n".getBytes());
-//                } else {
-//                    if (user != name) {
-//                        msg = count + "_ " + user + "\n";
-//                        out.write(msg.getBytes());
-//                        out.write("Please select the ID of the user you want to chat with\n".getBytes());
-//                    }
-//                }
-//            }
-//            out.flush();
-//
-//        } catch (IOException ex) {
-//            Logger.getLogger(MenuInteraction.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//private void sendRequest(int userID) throws IOException {
-//        ClientConnection targetClient = connectedClients.get(userID);
-//        String msg = name + " is inviting you for a chat, would you like to accept? [ y / n ]\n";
-//        targetClient.out.write(msg.getBytes());
-//        targetClient.out.write("INVITATION_REQUEST\n".getBytes());
-//        targetClient.out.flush();
 }

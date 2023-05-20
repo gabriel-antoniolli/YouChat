@@ -5,6 +5,7 @@
  */
 package serverSide;
 
+import clientSide.Chat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,6 +25,10 @@ public class ClientConnection implements Runnable {
 
     Socket client;
     public String name;
+    OutputStream targetClientOut;
+    InputStream targetClientIn;
+    Scanner targetClientReader;
+    Chat chat;
 
     /**
      *
@@ -48,6 +53,7 @@ public class ClientConnection implements Runnable {
                 if(userRequest.equals("INSERT_NAME")){
                     String temp = name = scanner.nextLine();
                     addUser(temp);
+                    connectedClients.put(name, client);
                     System.out.println("User added to the server: " + name);
                     System.out.println("Amount of users connected is:" + currentUsers.size());
                 }
@@ -68,11 +74,26 @@ public class ClientConnection implements Runnable {
                 if(userRequest.equals("CHAT_REQUEST")){
                     String from = scanner.nextLine();
                     String to = scanner.nextLine();
-                    /*
-                    while(true){
-                        
+                   
+                    targetClientOut = connectedClients.get(to).getOutputStream();
+                    targetClientIn = connectedClients.get(to).getInputStream();
+                    targetClientReader = new Scanner(targetClientIn).useDelimiter("\\n");
                     
-                    }*/
+                    out.write("PREPARE_CHAT\n".getBytes());
+                    String fromDetails = from + "\n";
+                    String toDetails = to + "\n";
+                    out.write(fromDetails.getBytes());
+                    out.flush();
+                    targetClientOut.write("PREPARE_CHAT\n".getBytes());
+                    targetClientOut.write(toDetails.getBytes());
+                    targetClientOut.flush();
+                    chat = new Chat();
+                }
+                if(userRequest.equals("CLIENT_MESSAGE")){
+                    
+                    String clientMessage = scanner.nextLine();
+                    System.out.println("heyy I am getting it: " + clientMessage);
+                    chat.appendMessage(clientMessage);
                 }
         }
             

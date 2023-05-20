@@ -14,6 +14,8 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -61,14 +63,30 @@ public class ClientReader implements Runnable {
                     }
                     setUsers(allUsers);
                 }
-                if(message.equals("INVITATION_REQUEST")){
-                
-                    
+                 if(message.equals("PREPARE_CHAT")){
+                    String from = scanner.nextLine();
+                    System.out.println("PREPARING CHAT...");
+                    Thread.sleep(2000);
+                    boolean valid = true;
+                     System.out.println("Press 'ENTER' two times to enter the Chat");
+                    while(valid){
+                        out.write("CLIENT_MESSAGE\n".getBytes());
+                        out.flush();
+                        System.out.print(from + "> ");
+                        String msg = scanner.nextLine();
+                        msg += "\n";
+                        out.write(msg.getBytes());
+                        out.flush();
+                    }
+
+
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        } catch (InterruptedException ex) {
+           Logger.getLogger(ClientReader.class.getName()).log(Level.SEVERE, null, ex);
+       }
     }
     
 }
