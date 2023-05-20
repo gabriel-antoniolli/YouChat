@@ -61,7 +61,6 @@ public class MenuItem1 {
             
         }     
         
-
             if (getUsers().size() == 1) {
                 System.out.println("No Users Available yet!\n");
                 System.out.println("Please insert 'r' to refresh the list");
@@ -91,7 +90,20 @@ public class MenuItem1 {
                     out.write("DECISION_1\n".getBytes());
                     display();
                 } else if(decision.matches("[0-9]+")){
-                    System.out.println("yohoiiiiiiii");
+                    /*
+                     * send message to server requesting that user
+                     * server has to find a way of stopping all the process of the requested client and open chat
+                    
+                    */
+                    
+                    String serverComm = "CHAT_REQUEST\n" ;
+                    String from = name + "\n";
+                    String to = map.get(Integer.parseInt(decision)) + "\n";
+
+                    out.write(serverComm.getBytes());
+                    out.write(from.getBytes());
+                    out.write(to.getBytes());
+                    out.flush();
                 }
                 
                 

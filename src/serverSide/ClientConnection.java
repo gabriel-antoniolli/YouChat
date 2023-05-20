@@ -64,7 +64,16 @@ public class ClientConnection implements Runnable {
                     out.write(clientMessage.getBytes());
                     out.write(userList.getBytes());
                     out.flush();
-            }
+                }
+                if(userRequest.equals("CHAT_REQUEST")){
+                    String from = scanner.nextLine();
+                    String to = scanner.nextLine();
+                    /*
+                    while(true){
+                        
+                    
+                    }*/
+                }
         }
             
 
