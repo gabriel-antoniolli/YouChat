@@ -9,7 +9,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  *
@@ -17,18 +20,46 @@ import java.util.Scanner;
  */
 public class Client {
     
+    private static ArrayList<String> allUsers = new ArrayList<>();
+    private static HashMap<Integer,String> userMap = new HashMap<>();
+    
+    public static void setUsers(ArrayList<String> list){
+        allUsers = list;
+        
+    }
+    
+    public static ArrayList<String> getUsers(){
+        return allUsers;
+    }
+    
     public static void main(String[] args) throws InterruptedException {
         try {
             Socket socket = new Socket("127.0.0.1", 8080);
             System.out.println("Connected to server at 127.0.0.1 on port 8080");
             InputStream in = socket.getInputStream();
             OutputStream out = socket.getOutputStream();
-            boolean valid = true;
+            Scanner sc = new Scanner(System.in);
+            Scanner serverScanner = new Scanner(in).useDelimiter("\n");
             
-            // create a new thread to continuously read messages from the server
             Thread readThread = new Thread(new ClientReader(socket,out));
             readThread.start();
             readThread.join(1000);
+
+            out.write("INSERT_NAME\n".getBytes());  
+            System.out.println("Please insert your name:\n");
+            String name = sc.nextLine();
+            String clientName = name;
+            name += "\n";
+            
+            out.write(name.getBytes());
+            out.write("JOIN_SERVER\n".getBytes());
+            out.flush();
+            MenuInteraction menu = new MenuInteraction(out, sc, serverScanner);
+            menu.setName(clientName);
+            menu.display();
+            
+            // create a new thread to continuously read messages from the server
+            
             
 //            while (valid) {
 //                

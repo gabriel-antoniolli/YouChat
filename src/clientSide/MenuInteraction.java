@@ -18,20 +18,25 @@ import static serverSide.WebSocketServer.currentUsers;
  *
  * @author gabri
  */
-public class MenuInteraction implements Runnable {
+public class MenuInteraction  {
 
     public String name;
     private OutputStream out;
+    Scanner sc;
+    Scanner serverScanner;
 
-    public MenuInteraction(OutputStream out, String name) {
-        this.name = name;
+    public MenuInteraction(OutputStream out, Scanner sc, Scanner serverScanner) {
+        this.sc = sc;
         this.out = out;
+        this.serverScanner = serverScanner;
+    }
+    
+    public synchronized void setName(String name){
+        this.name = name;
     }
 
-    @Override
-    public void run() {
+    public synchronized void display() {
     
-        Scanner sc = new Scanner(System.in);
         try{
             System.out.println("Main Menu\n");
             System.out.println("Please Select an Option: [numbers only]");
@@ -40,9 +45,10 @@ public class MenuInteraction implements Runnable {
             System.out.println("3_ Exit");
 
             int decision = sc.nextInt();
-            System.out.println(decision + " this was the decision");
             if(decision == 1){
-               MenuItem1 item1 =  new MenuItem1(name,out);
+               out.write("DECISION_1\n".getBytes());
+               
+               MenuItem1 item1 =  new MenuItem1(out,name);
                item1.display();
             }
             
