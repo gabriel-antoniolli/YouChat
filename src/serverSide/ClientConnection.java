@@ -10,45 +10,69 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import static serverSide.WebSocketServer.addUser;
+import static serverSide.WebSocketServer.connectedClients;
+import static serverSide.WebSocketServer.currentUsers;
 
 /**
  *
  * @author gabri
  */
 public class ClientConnection implements Runnable {
-    
+
     Socket client;
     public String name;
-    
-    public ClientConnection(Socket client){
+
+    /**
+     *
+     */
+    public OutputStream out;
+
+    public ClientConnection(Socket client) throws IOException {
         this.client = client;
+        this.out = client.getOutputStream();
     }
-    
+
     @Override
     public void run() {
-       
         try {
             InputStream in = client.getInputStream();
-            OutputStream out = client.getOutputStream();
-            out.write("Welcome to YouChat\n".getBytes());
-            out.write("Please Insert your name: \n".getBytes());
-            out.flush();
+            out = client.getOutputStream();
             Scanner scanner = new Scanner(in).useDelimiter("\\n");
-            // Prompt the client for their name
-            out.write("Enter your name: ".getBytes());
-            out.flush();
-            name = scanner.nextLine();
-            
-            // Use the name to identify the client in future messages
-            System.out.println(name + " connected.");
-            while (true) {
+    
+            while(true){
+                String userRequest = scanner.nextLine();
                 
-                String data = scanner.nextLine();
-                System.out.println(name + "> " + data);
-                // handle incoming message from client
+                if(userRequest.equals("INSERT_NAME")){
+                    String temp = name = scanner.nextLine();
+                    addUser(temp);
+                    System.out.println("User added to the server: " + name);
+                    System.out.println("Amount of users connected is:" + currentUsers.size());
+                }
+                if(userRequest.equals("JOIN_SERVER")){
+                    System.out.println(name + " has joined the server");
+                }
+                if(userRequest.equals("DECISION_1")){
+                    
+                    String userList = String.join(",", currentUsers);
+                    userList += "\n";
+                        
+                        
+                    String clientMessage = "CURRENT_USERS\n";
+                    out.write(clientMessage.getBytes());
+                    out.write(userList.getBytes());
+                    out.flush();
             }
-        } catch (IOException e) {
-            System.out.println("Error handling client: " + e.getMessage());
+        }
+            
+
+    // Exceptions
+        
+        } catch (IOException ex) {
+            Logger.getLogger(ClientConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
+
