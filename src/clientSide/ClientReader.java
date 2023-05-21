@@ -13,7 +13,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -25,10 +28,17 @@ public class ClientReader implements Runnable {
    private OutputStream out;
    public String name;
    private ArrayList<String> allUsers = new ArrayList<>();
+   Chat chat;
+   private HashMap<String,ArrayList<String>> chatHistory;
+   Scanner sc;
+   private ArrayList<String> messageHistory;
    
-    public ClientReader(Socket socket, OutputStream out) {
+    public ClientReader(Socket socket, OutputStream out, HashMap<String,ArrayList<String>> chatHistory, Scanner sc) {
+        this.messageHistory = new ArrayList<String>();
         this.socket = socket;
         this.out = out;
+        this.chatHistory = chatHistory;
+        this.sc = sc;
     }
     
 
@@ -61,9 +71,42 @@ public class ClientReader implements Runnable {
                     }
                     setUsers(allUsers);
                 }
-                if(message.equals("INVITATION_REQUEST")){
-                
-                    
+                if(message.equals("PREPARE_CHAT")){
+                   String from = scanner.nextLine();
+                   try{
+                    chat = new Chat();
+                   }catch(NullPointerException e){
+                       System.out.println("Opening Chat");
+                   }
+                   System.out.println("PREPARING CHAT...");
+                   System.out.println("Press 'ENTER' to enter the Chat");
+                   String msg = "FROM_" + from + "\n";
+                   out.write(msg.getBytes());
+                   out.flush();
+                   //Resets the array for a new chat
+                   messageHistory = new ArrayList();
+
+                }
+                if(message.equals("GET_DETAILS")){
+
+                    String from = scanner.nextLine();
+                    from += "\n";
+                    out.write(from.getBytes());
+                    out.flush();
+                }
+                if(message.equals("CLIENT_MESSAGE")){
+                   String msg = scanner.nextLine();
+                   messageHistory.add(msg);
+                   chat.appendMessage(msg);
+                   if(msg.contains("'exit'")){
+                       chat.exitChat();
+                       out.write("EXIT_CHAT\n".getBytes());
+                       out.flush();
+                   }
+                }
+                if(message.equals("SAVE_CHAT")){
+                    String from = scanner.nextLine();
+                    chatHistory.put(from,messageHistory);
                 }
             }
         } catch (IOException e) {

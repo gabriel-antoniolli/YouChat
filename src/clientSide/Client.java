@@ -22,6 +22,8 @@ public class Client {
     
     public static ArrayList<String> users = new ArrayList<>();
     private static HashMap<Integer,String> userMap = new HashMap<>();
+    private static HashMap<String,ArrayList<String>> chatHistory = new HashMap<>();
+    
     
     public static void setUsers(ArrayList<String> list){
         users = list;
@@ -41,7 +43,7 @@ public class Client {
             Scanner sc = new Scanner(System.in);
             Scanner serverScanner = new Scanner(in).useDelimiter("\n");
             
-            Thread readThread = new Thread(new ClientReader(socket,out));
+            Thread readThread = new Thread(new ClientReader(socket,out, chatHistory,sc));
             readThread.start();
             readThread.join(1000);
 
@@ -54,31 +56,10 @@ public class Client {
             out.write(name.getBytes());
             out.write("JOIN_SERVER\n".getBytes());
             out.flush();
-            MenuInteraction menu = new MenuInteraction(out, sc, serverScanner);
+            MenuInteraction menu = new MenuInteraction(out, sc, chatHistory);
             menu.setName(clientName);
             menu.display();
             
-            // create a new thread to continuously read messages from the server
-            
-            
-//            while (valid) {
-//                
-//                System.out.print(">");
-//                String message = scanner.nextLine();
-//                
-//                /**
-//                 * This + "\n" is quite important because without it the Scanner.nextLine() in the ClientConnection class 
-//                 * would not stop waiting for the message since the way it stops is when he finds the \n delimeter.
-//                 * I confess it took me some time to figure this out.
-//                 */
-//                out.write((message + "\n").getBytes());
-//                out.flush();
-//                
-//                if(message.equals("exit")){
-//                    valid = false;
-//                }
-//            }
-//            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
