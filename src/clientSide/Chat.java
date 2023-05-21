@@ -47,4 +47,8 @@ public class Chat extends JFrame {
         chatArea.append(msg);
         chatArea.append("\n");
     }
+    public void exitChat(){
+        System.exit(0);
+        
+    }
 }

@@ -25,9 +25,6 @@ public class ClientConnection implements Runnable {
 
     Socket client;
     public String name;
-    OutputStream targetClientOut;
-    InputStream targetClientIn;
-    Scanner targetClientReader;
     Chat chat;
     String from = "";
     public OutputStream target = null;
@@ -75,17 +72,16 @@ public class ClientConnection implements Runnable {
                 if (userRequest.equals("CHAT_REQUEST")) {
                     from = scanner.nextLine();
                     String to = scanner.nextLine();
-
-                    targetClientOut = connectedClients.get(to).getOutputStream();
+                    target = connectedClients.get(to).getOutputStream();
                     
                     out.write("PREPARE_CHAT\n".getBytes());
                     String fromDetails = from + "\n";
                     String toDetails = to + "\n";
                     out.write(toDetails.getBytes());
                     out.flush();
-                    targetClientOut.write("PREPARE_CHAT\n".getBytes());
-                    targetClientOut.write(fromDetails.getBytes());
-                    targetClientOut.flush();
+                    target.write("PREPARE_CHAT\n".getBytes());
+                    target.write(fromDetails.getBytes());
+                    target.flush();
 //                    targetClientOut.write("GET_DETAILS\n".getBytes());
 //                    targetClientOut.flush();
                 }
@@ -95,11 +91,9 @@ public class ClientConnection implements Runnable {
                         from = userRequest.substring(userRequest.indexOf("M_") + 2);
                         if( connectedClients.get(from).getOutputStream() != null){
                             target = connectedClients.get(from).getOutputStream();
-                            System.out.println("it comes here");
                         }
                     }
                 }
-                
                 if (userRequest.contains("CLIENT_MESSAGE")) {
 
                     String msg = scanner.nextLine();
@@ -115,13 +109,10 @@ public class ClientConnection implements Runnable {
                     out.write(senderMessage.getBytes());
                     out.flush();
                     
-                    System.out.println(target + " target");
-                    System.out.println(targetClientOut + " TargetClientOut");
                     target.write("CLIENT_MESSAGE\n".getBytes());
                     target.flush();
                     target.write(senderMessage.getBytes());
                     target.flush();
-                    
                 }
             }
         } catch (IOException ex) {

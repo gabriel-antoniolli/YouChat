@@ -23,13 +23,17 @@ public class MenuItem1 {
     private HashMap<Integer, String> map;
     private ArrayList<String> options;
     private ArrayList<String> displayItems;
+    private Scanner sc;
+    private HashMap<String,ArrayList<String>> chatHistory;
 
-    public MenuItem1(OutputStream out, String name) {
+    public MenuItem1(OutputStream out, String name, Scanner sc, HashMap<String,ArrayList<String>> chatHistory) {
         this.displayItems = new ArrayList<>();
         this.map = new HashMap<>();
         this.options = new ArrayList<>();
         this.out = out;
         this.name = name;
+        this.sc = sc;
+        this.chatHistory = chatHistory;
 
     }
 
@@ -45,8 +49,6 @@ public class MenuItem1 {
 
         Scanner internal = new Scanner(System.in);
 
-        // Checking My Get Users variable content
-        //getUsers().iterator().forEachRemaining(el -> System.out.println(el));
         int counter = 0;
         
         for (String user : getUsers()) {
@@ -58,18 +60,22 @@ public class MenuItem1 {
                 options.add(user);
                 displayItems.add(counter + "_ " + user);
             }
-            
         }     
         
             if (getUsers().size() == 1) {
                 System.out.println("No Users Available yet!\n");
-                System.out.println("Please insert 'r' to refresh the list");
+                System.out.println("Please type 'r' to refresh the list or 'b' to go back to main menu");
                 String decision = internal.nextLine();
                 if(!decision.trim().isEmpty()){
                     if (decision.equals("r")) {
                         out.write("DECISION_1\n".getBytes());
                         display();
 
+                    }else if(decision.equals("b")){
+                        MenuInteraction menu = new MenuInteraction(out,sc);
+                        menu.setName(name);
+                        menu.display();
+                    
                     } else {
                         // Maybe go back to previous menu would be good
                         System.out.println("Command not recognized, leaving application");
@@ -118,9 +124,15 @@ public class MenuItem1 {
                         out.flush();
                         System.out.print(name + "> ");
                         String msg = internal.nextLine();
+                        System.out.println("is it true: " + msg.equals("'exit'"));
+                        if(msg.equals("'exit'")){
+                            valid = false;
+                        }
                         msg += "\n";
                         out.write(msg.getBytes());
                         out.flush();
+                        
                     }
+                    display();
     }
 }

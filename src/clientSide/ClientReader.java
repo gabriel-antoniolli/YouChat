@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,10 +29,16 @@ public class ClientReader implements Runnable {
    public String name;
    private ArrayList<String> allUsers = new ArrayList<>();
    Chat chat;
+   private HashMap<String,ArrayList<String>> chatHistory;
+   Scanner sc;
+   private ArrayList<String> messageHistory;
    
-    public ClientReader(Socket socket, OutputStream out) {
+    public ClientReader(Socket socket, OutputStream out, HashMap<String,ArrayList<String>> chatHistory, Scanner sc) {
+        this.messageHistory = new ArrayList<String>();
         this.socket = socket;
         this.out = out;
+        this.chatHistory = chatHistory;
+        this.sc = sc;
     }
     
 
@@ -69,11 +76,11 @@ public class ClientReader implements Runnable {
                     chat = new Chat();
                     System.out.println("PREPARING CHAT...");
                     System.out.println("Press 'ENTER' to enter the Chat");
-                     System.out.println("WHAT IS THE FROM?  " +  from);
                     String msg = "FROM_" + from + "\n";
-                     System.out.println("message: " + msg);
                     out.write(msg.getBytes());
                     out.flush();
+                    //Resets the array for a new chat
+                    messageHistory = new ArrayList();
                     
                  }
                  if(message.equals("GET_DETAILS")){
@@ -85,9 +92,13 @@ public class ClientReader implements Runnable {
                  }
                  if(message.equals("CLIENT_MESSAGE")){
                      String msg = scanner.nextLine();
-                     System.out.println("CLIENT READER GETS THE MESSAGE");
+                     messageHistory.add(msg);
                      chat.appendMessage(msg);
-
+                     if(msg.equals("'exit'")){
+                         chat.exitChat();
+                         System.out.println("You Have Left the Chat.");
+                         chatHistory.put(name,messageHistory);
+                    }
                 }
             }
         } catch (IOException e) {
