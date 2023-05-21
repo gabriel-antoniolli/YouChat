@@ -28,6 +28,7 @@ public class ClientConnection implements Runnable {
     Chat chat;
     String from = "";
     public OutputStream target = null;
+    String to = "";
 
     /**
      *
@@ -71,7 +72,7 @@ public class ClientConnection implements Runnable {
                 }
                 if (userRequest.equals("CHAT_REQUEST")) {
                     from = scanner.nextLine();
-                    String to = scanner.nextLine();
+                    to = scanner.nextLine();
                     target = connectedClients.get(to).getOutputStream();
                     
                     out.write("PREPARE_CHAT\n".getBytes());
@@ -113,6 +114,18 @@ public class ClientConnection implements Runnable {
                     target.flush();
                     target.write(senderMessage.getBytes());
                     target.flush();
+                }
+                if(userRequest.equals("EXIT_CHAT")){
+                    if(from.equals(name)){
+                        from = to;
+                    }
+                    String msg = from + "\n";
+                    System.out.println("FROM: " + from);
+                    out.write("SAVE_CHAT\n".getBytes());
+                    out.flush();
+                    out.write(msg.getBytes());
+                    out.flush();
+                    
                 }
             }
         } catch (IOException ex) {

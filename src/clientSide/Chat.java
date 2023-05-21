@@ -25,8 +25,12 @@ public class Chat extends JFrame {
     private Border border;
     
     public static void main(String[] args){
-        new Chat();
-    }
+        try{
+            new Chat();
+        }catch(NullPointerException e){
+            System.out.println("Opening Chat");
+        }
+        }
     
     public Chat(){
         frame = new JFrame("Product Bot");
@@ -48,7 +52,7 @@ public class Chat extends JFrame {
         chatArea.append("\n");
     }
     public void exitChat(){
-        System.exit(0);
+        Thread.currentThread().interrupt();
         
     }
 }

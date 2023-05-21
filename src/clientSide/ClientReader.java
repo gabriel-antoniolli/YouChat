@@ -71,34 +71,42 @@ public class ClientReader implements Runnable {
                     }
                     setUsers(allUsers);
                 }
-                 if(message.equals("PREPARE_CHAT")){
-                    String from = scanner.nextLine();
+                if(message.equals("PREPARE_CHAT")){
+                   String from = scanner.nextLine();
+                   try{
                     chat = new Chat();
-                    System.out.println("PREPARING CHAT...");
-                    System.out.println("Press 'ENTER' to enter the Chat");
-                    String msg = "FROM_" + from + "\n";
-                    out.write(msg.getBytes());
+                   }catch(NullPointerException e){
+                       System.out.println("Opening Chat");
+                   }
+                   System.out.println("PREPARING CHAT...");
+                   System.out.println("Press 'ENTER' to enter the Chat");
+                   String msg = "FROM_" + from + "\n";
+                   out.write(msg.getBytes());
+                   out.flush();
+                   //Resets the array for a new chat
+                   messageHistory = new ArrayList();
+
+                }
+                if(message.equals("GET_DETAILS")){
+
+                    String from = scanner.nextLine();
+                    from += "\n";
+                    out.write(from.getBytes());
                     out.flush();
-                    //Resets the array for a new chat
-                    messageHistory = new ArrayList();
-                    
-                 }
-                 if(message.equals("GET_DETAILS")){
-                 
-                     String from = scanner.nextLine();
-                     from += "\n";
-                     out.write(from.getBytes());
-                     out.flush();
-                 }
-                 if(message.equals("CLIENT_MESSAGE")){
-                     String msg = scanner.nextLine();
-                     messageHistory.add(msg);
-                     chat.appendMessage(msg);
-                     if(msg.equals("'exit'")){
-                         chat.exitChat();
-                         System.out.println("You Have Left the Chat.");
-                         chatHistory.put(name,messageHistory);
-                    }
+                }
+                if(message.equals("CLIENT_MESSAGE")){
+                   String msg = scanner.nextLine();
+                   messageHistory.add(msg);
+                   chat.appendMessage(msg);
+                   if(msg.contains("'exit'")){
+                       chat.exitChat();
+                       out.write("EXIT_CHAT\n".getBytes());
+                       out.flush();
+                   }
+                }
+                if(message.equals("SAVE_CHAT")){
+                    String from = scanner.nextLine();
+                    chatHistory.put(from,messageHistory);
                 }
             }
         } catch (IOException e) {

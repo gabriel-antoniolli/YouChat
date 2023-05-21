@@ -25,6 +25,7 @@ public class MenuItem1 {
     private ArrayList<String> displayItems;
     private Scanner sc;
     private HashMap<String,ArrayList<String>> chatHistory;
+    boolean valid = true;
 
     public MenuItem1(OutputStream out, String name, Scanner sc, HashMap<String,ArrayList<String>> chatHistory) {
         this.displayItems = new ArrayList<>();
@@ -34,6 +35,7 @@ public class MenuItem1 {
         this.name = name;
         this.sc = sc;
         this.chatHistory = chatHistory;
+        this.valid = true;
 
     }
 
@@ -53,7 +55,6 @@ public class MenuItem1 {
         
         for (String user : getUsers()) {
             counter++;
-            boolean valid = true;
             map.put(counter, user);
             
             if(!options.contains(user)){
@@ -72,7 +73,7 @@ public class MenuItem1 {
                         display();
 
                     }else if(decision.equals("b")){
-                        MenuInteraction menu = new MenuInteraction(out,sc);
+                        MenuInteraction menu = new MenuInteraction(out,sc,chatHistory);
                         menu.setName(name);
                         menu.display();
                     
@@ -92,11 +93,17 @@ public class MenuItem1 {
                         System.out.println(curr);
                     } 
                 }
+                System.out.println("Or type 'b' to go back to Main Menu");
                 String decision = internal.nextLine();
                 if(!decision.trim().isEmpty()){
                     if(decision.equals("r")){
                         out.write("DECISION_1\n".getBytes());
                         display();
+                    } else if(decision.equals("b")){
+                        MenuInteraction menu = new MenuInteraction(out,sc,chatHistory);
+                        menu.setName(name);
+                        menu.display();
+                    
                     } else if(decision.matches("[0-9]+")){
                         /*
                          * send message to server requesting that user
@@ -110,24 +117,27 @@ public class MenuItem1 {
                         out.write(from.getBytes());
                         out.write(to.getBytes());
                         out.flush();
+                    } else {
+                        System.out.println("command invalid please try again");
+                        display();
                     }
                 }
             }
                     
                     Thread.sleep(2000);
                     
-                    boolean valid = true;
+                    
                     
                     while(valid){
-                        String serverMessage = "CLIENT_MESSAGE_" + name +"\n";
-                        out.write(serverMessage.getBytes());
-                        out.flush();
+                        
                         System.out.print(name + "> ");
                         String msg = internal.nextLine();
-                        System.out.println("is it true: " + msg.equals("'exit'"));
                         if(msg.equals("'exit'")){
                             valid = false;
                         }
+                        String serverMessage = "CLIENT_MESSAGE_" + name +"\n";
+                        out.write(serverMessage.getBytes());
+                        out.flush();
                         msg += "\n";
                         out.write(msg.getBytes());
                         out.flush();

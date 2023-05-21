@@ -24,6 +24,7 @@ public class Client {
     private static HashMap<Integer,String> userMap = new HashMap<>();
     private static HashMap<String,ArrayList<String>> chatHistory = new HashMap<>();
     
+    
     public static void setUsers(ArrayList<String> list){
         users = list;
         

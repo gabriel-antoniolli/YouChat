@@ -5,8 +5,11 @@
  */
 package clientSide;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 
 /**
  *
@@ -15,17 +18,69 @@ import java.util.HashMap;
 public class ChatHistory {
     
     private HashMap<String,ArrayList<String>> chatHistory;
+    private Scanner sc;
+    private OutputStream out;
+    private String name;
     
-    public ChatHistory(HashMap<String,ArrayList<String>> chatHistory){
+    public ChatHistory(HashMap<String,ArrayList<String>> chatHistory, Scanner sc, OutputStream out, String name){
         this.chatHistory = chatHistory;
+        this.sc = sc;
+        this.out = out;
+        this.name = name;
     }
     
     public void displayOptions(){
     
         if(chatHistory.size() == 0){
             System.out.println("This user has not had a chat with another user yet! please have a chat and come back here later!");
+            System.out.println("Press 'r' to refresh, 'b' to go back to Main Menu or type 'x' to exit");
+            String decision= sc.nextLine();
+            if(decision.equals("b")){
+                
+                MenuInteraction menu = new MenuInteraction(out,sc,chatHistory);
+                menu.setName(name);
+                menu.display();
+            } else if(decision.equals('r')){
+                
+                displayOptions();
+            } else{
+                System.exit(0);
+            }
         } else {
-            System.out.println("Select");
+            System.out.println("Select type the name of the person of the conversation you want to review");
+            System.out.println("Options:\n");
+            
+            for(String name : chatHistory.keySet()){
+                System.out.println("_ " + name);
+            }
+            System.out.println("\nOr press 'b' to go back to main menu");
+            try{
+                String decision = sc.nextLine();
+                if(decision.equals("b")){
+                   MenuInteraction menu = new MenuInteraction(out,sc,chatHistory);
+                   menu.setName(name);
+                   menu.display();
+                }else{
+                    if(chatHistory.get(decision).isEmpty() == false){
+
+                        chatHistory.get(decision).forEach(el -> System.out.println(el));
+                        System.out.println("\n Press any key to leave");
+                        String decision2 = sc.nextLine();
+                        if(decision2.matches("[a-zA-Z0-9]+") || decision2.isEmpty()){
+                            displayOptions();
+                        } else {
+                            System.out.println("command not found");
+                            System.exit(0);
+                        }
+                    } else {
+                        System.out.println("sorry conversation not found, try again");
+                        displayOptions();
+                    }
+                }
+            }catch(Exception ex){
+                System.out.println("Command not acknowledge, please try again");
+                displayOptions();
+            }
         }
     }
     

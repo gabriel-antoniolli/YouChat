@@ -54,7 +54,8 @@ public class MenuInteraction  {
                item1.display();
             } else if(decision == 2){
                 //chat history menu?
-                ChatHistory history = new ChatHistory();
+                ChatHistory history = new ChatHistory(chatHistory,sc,out,name);
+                history.displayOptions();
             
             } else if(decision == 3) {
                 System.out.println("Thanks for using our app!");
