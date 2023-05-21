@@ -31,6 +31,9 @@ public class ChatHistory {
     
     public void displayOptions(){
     
+        /**
+         * warn user that has no chat history yet, and offers options to go back, refresh or exit application.
+         */
         if(chatHistory.size() == 0){
             System.out.println("This user has not had a chat with another user yet! please have a chat and come back here later!");
             System.out.println("Press 'r' to refresh, 'b' to go back to Main Menu or type 'x' to exit");
@@ -46,6 +49,11 @@ public class ChatHistory {
             } else{
                 System.exit(0);
             }
+            
+            /**
+             * if there is chat history, all the user has to do is to type the name which is the key to open the conversation.
+             * Again the user has always the option to go back to main menu
+             */
         } else {
             System.out.println("Select type the name of the person of the conversation you want to review");
             System.out.println("Options:\n");
@@ -61,8 +69,12 @@ public class ChatHistory {
                    menu.setName(name);
                    menu.display();
                 }else{
+                    // if user selected a key, meaning decision is not false.
                     if(chatHistory.get(decision).isEmpty() == false){
 
+                        /**
+                         * displaying the chat messages to the user of the related key, the user can then leave by typing any key of the keyboard.
+                         */
                         chatHistory.get(decision).forEach(el -> System.out.println(el));
                         System.out.println("\n Press any key to leave");
                         String decision2 = sc.nextLine();

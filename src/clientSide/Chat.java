@@ -16,7 +16,12 @@ import javax.swing.JTextField;
 
 /**
  *
- * @author gabri
+ * @author gabriel Pereira Antoniolli -- 2020352
+ * 
+ * not really much to discuss here to be honest, most of it is a template i got online.
+ * https://codereview.stackexchange.com/questions/25461/simple-chat-room-swing-gui
+ * I just had to do some small adjustments.
+ * 
  */
 public class Chat extends JFrame {
     private JFrame frame;
@@ -24,16 +29,8 @@ public class Chat extends JFrame {
     private JScrollPane scroll;
     private Border border;
     
-    public static void main(String[] args){
-        try{
-            new Chat();
-        }catch(NullPointerException e){
-            System.out.println("Opening Chat");
-        }
-        }
-    
     public Chat(){
-        frame = new JFrame("Product Bot");
+        frame = new JFrame("YouChat");
         chatArea = new JTextArea(20,50);
         scroll = new JScrollPane(chatArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         chatArea.setSize(540, 400);

@@ -18,10 +18,14 @@ import static serverSide.WebSocketServer.currentUsers;
 
 /**
  *
- * @author gabri
+ * @author gabriel Pereira Antoniolli -- 2020352
  */
 public class MenuInteraction  {
 
+    /**
+     * it is important to heir all the properties that the user needs to preserve, otherwise when working with threads
+     * it can present some loss of data or unexpected behaviour
+     */
     public String name;
     private OutputStream out;
     Scanner sc;
@@ -33,6 +37,11 @@ public class MenuInteraction  {
         this.chatHistory = chatHistory;
     }
     
+    /**
+     * 
+     * both methods are using synchronized because this object might be, and most probably will, be accessed by multiple clients
+     * at the same time
+     */
     public synchronized void setName(String name){
         this.name = name;
     }
@@ -47,19 +56,25 @@ public class MenuInteraction  {
             System.out.println("3_ Exit");
 
             int decision = sc.nextInt();
+            // if decision is 1 take client to "check Available users menu" -> MenuItem1 class
             if(decision == 1){
                out.write("DECISION_1\n".getBytes());
                
                MenuItem1 item1 =  new MenuItem1(out,name,sc, chatHistory);
                item1.display();
+               
+               //if decision is 2 take client to ChatHistory menu
             } else if(decision == 2){
                 //chat history menu?
                 ChatHistory history = new ChatHistory(chatHistory,sc,out,name);
                 history.displayOptions();
             
+                // if dicision is 3 exit the application.
             } else if(decision == 3) {
                 System.out.println("Thanks for using our app!");
                 System.exit(0);
+                
+                // if command is not recognized then prompt it to the user and reload class.
             } else {
                 System.out.println("Command not acknowledge try again");
                 display();
