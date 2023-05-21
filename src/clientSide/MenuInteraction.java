@@ -45,7 +45,6 @@ public class MenuInteraction  {
             System.out.println("3_ Exit");
 
             int decision = sc.nextInt();
-            System.out.println("I Cant Believe it is here: " + decision);
             if(decision == 1){
                out.write("DECISION_1\n".getBytes());
                

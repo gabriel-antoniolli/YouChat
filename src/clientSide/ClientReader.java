@@ -27,6 +27,7 @@ public class ClientReader implements Runnable {
    private OutputStream out;
    public String name;
    private ArrayList<String> allUsers = new ArrayList<>();
+   Chat chat;
    
     public ClientReader(Socket socket, OutputStream out) {
         this.socket = socket;
@@ -65,28 +66,33 @@ public class ClientReader implements Runnable {
                 }
                  if(message.equals("PREPARE_CHAT")){
                     String from = scanner.nextLine();
+                    chat = new Chat();
                     System.out.println("PREPARING CHAT...");
-                    Thread.sleep(2000);
-                    boolean valid = true;
-                     System.out.println("Press 'ENTER' two times to enter the Chat");
-                    while(valid){
-                        out.write("CLIENT_MESSAGE\n".getBytes());
-                        out.flush();
-                        System.out.print(from + "> ");
-                        String msg = scanner.nextLine();
-                        msg += "\n";
-                        out.write(msg.getBytes());
-                        out.flush();
-                    }
-
+                    System.out.println("Press 'ENTER' to enter the Chat");
+                     System.out.println("WHAT IS THE FROM?  " +  from);
+                    String msg = "FROM_" + from + "\n";
+                     System.out.println("message: " + msg);
+                    out.write(msg.getBytes());
+                    out.flush();
+                    
+                 }
+                 if(message.equals("GET_DETAILS")){
+                 
+                     String from = scanner.nextLine();
+                     from += "\n";
+                     out.write(from.getBytes());
+                     out.flush();
+                 }
+                 if(message.equals("CLIENT_MESSAGE")){
+                     String msg = scanner.nextLine();
+                     System.out.println("CLIENT READER GETS THE MESSAGE");
+                     chat.appendMessage(msg);
 
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException ex) {
-           Logger.getLogger(ClientReader.class.getName()).log(Level.SEVERE, null, ex);
-       }
+        }
     }
     
 }

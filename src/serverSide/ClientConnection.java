@@ -29,6 +29,8 @@ public class ClientConnection implements Runnable {
     InputStream targetClientIn;
     Scanner targetClientReader;
     Chat chat;
+    String from = "";
+    public OutputStream target = null;
 
     /**
      *
@@ -46,63 +48,84 @@ public class ClientConnection implements Runnable {
             InputStream in = client.getInputStream();
             out = client.getOutputStream();
             Scanner scanner = new Scanner(in).useDelimiter("\\n");
-    
-            while(true){
+
+            while (true) {
                 String userRequest = scanner.nextLine();
-                
-                if(userRequest.equals("INSERT_NAME")){
+
+                if (userRequest.equals("INSERT_NAME")) {
                     String temp = name = scanner.nextLine();
                     addUser(temp);
                     connectedClients.put(name, client);
                     System.out.println("User added to the server: " + name);
                     System.out.println("Amount of users connected is:" + currentUsers.size());
                 }
-                if(userRequest.equals("JOIN_SERVER")){
+                if (userRequest.equals("JOIN_SERVER")) {
                     System.out.println(name + " has joined the server");
                 }
-                if(userRequest.equals("DECISION_1")){
-                    
+                if (userRequest.equals("DECISION_1")) {
+
                     String userList = String.join(",", currentUsers);
                     userList += "\n";
-                        
-                        
+
                     String clientMessage = "CURRENT_USERS\n";
                     out.write(clientMessage.getBytes());
                     out.write(userList.getBytes());
                     out.flush();
                 }
-                if(userRequest.equals("CHAT_REQUEST")){
-                    String from = scanner.nextLine();
+                if (userRequest.equals("CHAT_REQUEST")) {
+                    from = scanner.nextLine();
                     String to = scanner.nextLine();
-                   
+
                     targetClientOut = connectedClients.get(to).getOutputStream();
-                    targetClientIn = connectedClients.get(to).getInputStream();
-                    targetClientReader = new Scanner(targetClientIn).useDelimiter("\\n");
                     
                     out.write("PREPARE_CHAT\n".getBytes());
                     String fromDetails = from + "\n";
                     String toDetails = to + "\n";
-                    out.write(fromDetails.getBytes());
+                    out.write(toDetails.getBytes());
                     out.flush();
                     targetClientOut.write("PREPARE_CHAT\n".getBytes());
-                    targetClientOut.write(toDetails.getBytes());
+                    targetClientOut.write(fromDetails.getBytes());
                     targetClientOut.flush();
-                    chat = new Chat();
+//                    targetClientOut.write("GET_DETAILS\n".getBytes());
+//                    targetClientOut.flush();
                 }
-                if(userRequest.equals("CLIENT_MESSAGE")){
-                    
-                    String clientMessage = scanner.nextLine();
-                    System.out.println("heyy I am getting it: " + clientMessage);
-                    chat.appendMessage(clientMessage);
+                if(userRequest.contains("FROM_")){
+                    if(from.equals("")){
+                        
+                        from = userRequest.substring(userRequest.indexOf("M_") + 2);
+                        if( connectedClients.get(from).getOutputStream() != null){
+                            target = connectedClients.get(from).getOutputStream();
+                            System.out.println("it comes here");
+                        }
+                    }
                 }
-        }
-            
+                
+                if (userRequest.contains("CLIENT_MESSAGE")) {
 
-    // Exceptions
-        
+                    String msg = scanner.nextLine();
+                    msg += "\n";
+                    
+                    int startIndex = userRequest.indexOf("E_") + 2;
+                    String tempName = userRequest.substring(startIndex);
+                    
+
+                    String senderMessage = name + "> " + msg;
+                    out.write("CLIENT_MESSAGE\n".getBytes());
+                    out.flush();
+                    out.write(senderMessage.getBytes());
+                    out.flush();
+                    
+                    System.out.println(target + " target");
+                    System.out.println(targetClientOut + " TargetClientOut");
+                    target.write("CLIENT_MESSAGE\n".getBytes());
+                    target.flush();
+                    target.write(senderMessage.getBytes());
+                    target.flush();
+                    
+                }
+            }
         } catch (IOException ex) {
             Logger.getLogger(ClientConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
-

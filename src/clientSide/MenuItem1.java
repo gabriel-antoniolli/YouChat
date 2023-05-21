@@ -65,14 +65,12 @@ public class MenuItem1 {
                 System.out.println("No Users Available yet!\n");
                 System.out.println("Please insert 'r' to refresh the list");
                 String decision = internal.nextLine();
-                System.out.println("test 1: " + decision);
                 if(!decision.trim().isEmpty()){
                     if (decision.equals("r")) {
                         out.write("DECISION_1\n".getBytes());
                         display();
 
                     } else {
-                        System.out.println(decision + ": that is it");
                         // Maybe go back to previous menu would be good
                         System.out.println("Command not recognized, leaving application");
                         System.exit(0);
@@ -97,9 +95,7 @@ public class MenuItem1 {
                         /*
                          * send message to server requesting that user
                          * server has to find a way of stopping all the process of the requested client and open chat
-
                         */
-                        System.out.println("Nao tenho certeza se cai aqui a porra da decisao");
                         String serverComm = "CHAT_REQUEST\n" ;
                         String from = name + "\n";
                         String to = map.get(Integer.parseInt(decision)) + "\n";
@@ -111,5 +107,20 @@ public class MenuItem1 {
                     }
                 }
             }
+                    
+                    Thread.sleep(2000);
+                    
+                    boolean valid = true;
+                    
+                    while(valid){
+                        String serverMessage = "CLIENT_MESSAGE_" + name +"\n";
+                        out.write(serverMessage.getBytes());
+                        out.flush();
+                        System.out.print(name + "> ");
+                        String msg = internal.nextLine();
+                        msg += "\n";
+                        out.write(msg.getBytes());
+                        out.flush();
+                    }
     }
 }
